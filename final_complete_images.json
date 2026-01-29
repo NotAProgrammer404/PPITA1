@@ -1,0 +1,756 @@
+{
+  "document": {
+    "title": "SURFACE CHEMISTRY",
+    "width": 684,
+    "height": 951,
+    "elements": [
+      {
+        "id": 1,
+        "type": "heading",
+        "level": 1,
+        "content": "SURFACE CHEMISTRY",
+        "position": "top-center",
+        "bbox": {
+          "x": 25,
+          "y": 1,
+          "width": 50,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "xlarge",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": true,
+          "alignment": "center"
+        }
+      },
+      {
+        "id": 2,
+        "type": "heading",
+        "level": 2,
+        "content": "Adsorption",
+        "position": "top-left",
+        "bbox": {
+          "x": 5,
+          "y": 5,
+          "width": 20,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 3,
+        "type": "paragraph",
+        "content": "Accumulation of molecular species of the surface rather than bulk of solid or liquid.",
+        "position": "top-left",
+        "bbox": {
+          "x": 25,
+          "y": 5,
+          "width": 40,
+          "height": 5
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 4,
+        "type": "image",
+        "description": "Diagram illustrating adsorption: Gas (adsorbate) entering a solid box (surface/adsorbent) and accumulating on its surface.",
+        "image_type": "diagram",
+        "image_size": "medium",
+        "position": "top-left",
+        "bbox": {
+          "x": 10,
+          "y": 10,
+          "width": 50,
+          "height": 8
+        },
+        "image_path": "images/image_001.png"
+      },
+      {
+        "id": 5,
+        "type": "list",
+        "content": [
+          "Enthalpy (ΔH) = -ve (Exothermic)",
+          "Entropy (ΔS) = -ve",
+          "Gibbs free energy (ΔG) = -ve"
+        ],
+        "position": "top-left",
+        "bbox": {
+          "x": 6,
+          "y": 19,
+          "width": 30,
+          "height": 7
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 6,
+        "type": "formula",
+        "content": "ΔH > TAS",
+        "position": "top-center",
+        "bbox": {
+          "x": 40,
+          "y": 21,
+          "width": 10,
+          "height": 3
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "center"
+        }
+      },
+      {
+        "id": 7,
+        "type": "heading",
+        "level": 2,
+        "content": "Desorption",
+        "position": "top-right",
+        "bbox": {
+          "x": 60,
+          "y": 7,
+          "width": 20,
+          "height": 2
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 8,
+        "type": "paragraph",
+        "content": "The process of removing adsorbate from adsorbent.",
+        "position": "top-right",
+        "bbox": {
+          "x": 60,
+          "y": 9,
+          "width": 35,
+          "height": 4
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 9,
+        "type": "heading",
+        "level": 2,
+        "content": "Absorption",
+        "position": "top-right",
+        "bbox": {
+          "x": 60,
+          "y": 14,
+          "width": 20,
+          "height": 2
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 10,
+        "type": "paragraph",
+        "content": "When atom/molecule/ion enters the bulk of solid or liquid. e.g. H₂O (vap) absorbed by CaCl₂",
+        "position": "top-right",
+        "bbox": {
+          "x": 60,
+          "y": 16,
+          "width": 35,
+          "height": 7
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 11,
+        "type": "heading",
+        "level": 2,
+        "content": "Sorption",
+        "position": "top-right",
+        "bbox": {
+          "x": 60,
+          "y": 24,
+          "width": 15,
+          "height": 2
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 12,
+        "type": "paragraph",
+        "content": "Adsorption & absorption simultaneously e.g. Dyeing of fabric.",
+        "position": "top-right",
+        "bbox": {
+          "x": 60,
+          "y": 26,
+          "width": 35,
+          "height": 4
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 13,
+        "type": "heading",
+        "level": 2,
+        "content": "Type of adsorption",
+        "position": "middle-left",
+        "bbox": {
+          "x": 5,
+          "y": 28,
+          "width": 30,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 14,
+        "type": "list",
+        "content": [
+          {
+            "Physical adsorption": [
+              "Vander Waals force",
+              "Reversible force",
+              "Low activation energy",
+              "It is not specific"
+            ]
+          },
+          {
+            "Chemical adsorption": [
+              "Covalent force",
+              "Irreversible",
+              "High activation energy",
+              "Highly specific"
+            ]
+          }
+        ],
+        "position": "middle-left",
+        "bbox": {
+          "x": 5,
+          "y": 32,
+          "width": 55,
+          "height": 14
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 15,
+        "type": "formula",
+        "content": "Physical adsorption α α Tc α liquefaction",
+        "position": "middle-left",
+        "bbox": {
+          "x": 5,
+          "y": 47,
+          "width": 55,
+          "height": 3
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 16,
+        "type": "paragraph",
+        "content": "Easily liquefiable gases form more physisorption.",
+        "position": "middle-right",
+        "bbox": {
+          "x": 60,
+          "y": 32,
+          "width": 35,
+          "height": 4
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 17,
+        "type": "formula",
+        "content": "Tc = 8a / 27Rb => Tc α a",
+        "position": "middle-right",
+        "bbox": {
+          "x": 60,
+          "y": 36,
+          "width": 30,
+          "height": 5
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 18,
+        "type": "heading",
+        "level": 2,
+        "content": "Factors affecting adsorption",
+        "position": "middle-left",
+        "bbox": {
+          "x": 5,
+          "y": 51,
+          "width": 35,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 19,
+        "type": "list",
+        "content": [
+          "1. Nature of gas: Adsorption α ΔTc",
+          "2. Nature of adsorbent: Adsorbent (activated adsorbent)",
+          "3. Specific area of solid: Adsorption α surface area"
+        ],
+        "position": "middle-left",
+        "bbox": {
+          "x": 5,
+          "y": 55,
+          "width": 50,
+          "height": 10
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 20,
+        "type": "heading",
+        "level": 2,
+        "content": "Effect of temp on adsorption",
+        "position": "middle-right",
+        "bbox": {
+          "x": 60,
+          "y": 45,
+          "width": 35,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 21,
+        "type": "formula",
+        "content": "Physisorption α 1/temp",
+        "position": "middle-right",
+        "bbox": {
+          "x": 60,
+          "y": 49,
+          "width": 25,
+          "height": 2
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 22,
+        "type": "formula",
+        "content": "Chemisorption α temp",
+        "position": "middle-right",
+        "bbox": {
+          "x": 60,
+          "y": 52,
+          "width": 25,
+          "height": 2
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 23,
+        "type": "image",
+        "description": "Two graphs showing adsorption (N/M) versus pressure (P) at different temperatures. The left graph (T₂<T₁) shows adsorption decreasing with increasing temperature, typical for physisorption. The right graph (T₂>T₁) shows adsorption initially increasing then decreasing with temperature, typical for chemisorption.",
+        "image_type": "diagram",
+        "image_size": "medium",
+        "position": "middle-right",
+        "bbox": {
+          "x": 58,
+          "y": 54,
+          "width": 40,
+          "height": 15
+        },
+        "image_path": "images/image_002.png"
+      },
+      {
+        "id": 24,
+        "type": "heading",
+        "level": 2,
+        "content": "Effect of pressure on gases",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 5,
+          "y": 66,
+          "width": 35,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 25,
+        "type": "paragraph",
+        "content": "Adsorption increases with increase in pressure.",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 5,
+          "y": 69,
+          "width": 40,
+          "height": 2
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 26,
+        "type": "heading",
+        "level": 2,
+        "content": "Freundlich adsorption isotherm",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 5,
+          "y": 72,
+          "width": 45,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 27,
+        "type": "paragraph",
+        "content": "m gram adsorbent → (x) gm adsorbate accumulate.",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 5,
+          "y": 75,
+          "width": 45,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 28,
+        "type": "formula",
+        "content": "(x/m) = KP^(1/n)",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 5,
+          "y": 78,
+          "width": 30,
+          "height": 4
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 29,
+        "type": "paragraph",
+        "content": "Weight of adsorbate per gram adsorbent",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 35,
+          "y": 79,
+          "width": 20,
+          "height": 4
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 30,
+        "type": "image",
+        "description": "Two graphs illustrating the Freundlich Adsorption Isotherm. The left graph shows x/m versus P, with a curve showing increasing adsorption with pressure, labeled with 'n=0 => x/m=K', 'x/m=KP^(1/n) (n=1 to 100)', and '1/n=1 => x/m=KP'. The right graph shows log(x/m) versus log P, depicted as a straight line with a slope of 1/n.",
+        "image_type": "diagram",
+        "image_size": "medium",
+        "position": "bottom-left",
+        "bbox": {
+          "x": 5,
+          "y": 83,
+          "width": 55,
+          "height": 16
+        },
+        "image_path": "images/image_003.png"
+      },
+      {
+        "id": 31,
+        "type": "heading",
+        "level": 2,
+        "content": "Langmuir adsorption isotherm",
+        "position": "bottom-right",
+        "bbox": {
+          "x": 60,
+          "y": 70,
+          "width": 35,
+          "height": 3
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "large",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "red",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 32,
+        "type": "formula",
+        "content": "x/m = aP / (1 + bP)",
+        "position": "bottom-right",
+        "bbox": {
+          "x": 60,
+          "y": 73,
+          "width": 20,
+          "height": 4
+        },
+        "is_math": true,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "bold",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 33,
+        "type": "paragraph",
+        "content": "T → Constant",
+        "position": "bottom-right",
+        "bbox": {
+          "x": 80,
+          "y": 73,
+          "width": 15,
+          "height": 2
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 34,
+        "type": "paragraph",
+        "content": "a, b → parameters",
+        "position": "bottom-right",
+        "bbox": {
+          "x": 80,
+          "y": 75,
+          "width": 15,
+          "height": 2
+        },
+        "is_math": false,
+        "style": {
+          "font_size": "medium",
+          "font_weight": "normal",
+          "font_style": "normal",
+          "text_color": "black",
+          "underline": false,
+          "alignment": "left"
+        }
+      },
+      {
+        "id": 35,
+        "type": "image",
+        "description": "A graph illustrating the Langmuir Adsorption Isotherm, showing x/m versus pressure (P). The curve shows a hyperbolic increase in adsorption with pressure, eventually leveling off. Annotations indicate 'moderate pressure' and 'high pressure' (where x/m ≈ a/b) and 'low pressure' (where x/m = aP).",
+        "image_type": "diagram",
+        "image_size": "medium",
+        "position": "bottom-right",
+        "bbox": {
+          "x": 60,
+          "y": 80,
+          "width": 38,
+          "height": 19
+        },
+        "image_path": "images/image_004.png"
+      }
+    ]
+  }
+}

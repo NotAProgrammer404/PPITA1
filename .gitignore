@@ -22,33 +22,46 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual Environment
-.venv/
+.venv
 venv/
+
+# Node.js / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.cache
+dist/
+tmp/
 
 # API Keys and Environment Variables
 .env
+.env.*
 *.env
 config.json
 secrets.json
 
-# IDE
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Output files
+# Output files (adjust if you want to track some samples, but usually output is ignored)
 output/
+test_output/
 *.pdf
-test_images/
-samples/
+*.docx
 
-# Logs
-*.log
+# Project specific
+images/
+!images/sample.png  # Example: if you want to keep specific images, unignore them
+test_document.png
+handwritten_notes.png
