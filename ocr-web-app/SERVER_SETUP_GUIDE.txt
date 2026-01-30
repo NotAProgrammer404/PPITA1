@@ -1,0 +1,187 @@
+================================================================================
+                    OCR WEB APP - SERVER SETUP DOCUMENTATION
+================================================================================
+Created: 2026-01-31
+Purpose: Document how the app is hosted and how to restore the PC to original state
+
+================================================================================
+                              WHAT THIS APP DOES
+================================================================================
+
+This is an OCR (Optical Character Recognition) Web Application with:
+
+1. FRONTEND (React + Vite + TailwindCSS)
+   - User interface for uploading documents/images
+   - Displays OCR results
+   - Runs on port 5173
+
+2. BACKEND (Python FastAPI + Uvicorn)
+   - Processes OCR requests using Google Gemini Vision API
+   - Handles file uploads and conversions
+   - Runs on port 8000
+
+================================================================================
+                         HOW CONNECTIONS WERE ESTABLISHED
+================================================================================
+
+LAYER 1: PM2 PROCESS MANAGER
+-----------------------------
+PM2 keeps both frontend and backend running as background processes.
+
+Config file: /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app/ecosystem.config.js
+
+What it does:
+- Starts the backend: uvicorn api.index:app --host 0.0.0.0 --port 8000
+- Starts the frontend: npm run dev (which runs vite --host)
+- Auto-restarts if either crashes
+- Manages logs
+
+Local access after PM2 start:
+- Frontend: http://localhost:5173 or http://192.168.100.7:5173
+- Backend:  http://localhost:8000 or http://192.168.100.7:8000
+
+
+LAYER 2: CLOUDFLARE TUNNEL (for public internet access)
+-------------------------------------------------------
+Cloudflared creates a secure tunnel from Cloudflare's servers to your local machine.
+
+How it works:
+1. Your PC connects OUTBOUND to Cloudflare (no port forwarding needed)
+2. Cloudflare gives you a public URL (*.trycloudflare.com)
+3. Anyone accessing that URL gets routed through Cloudflare to your local port 5173
+
+Current public URL: https://cold-collins-sunglasses-participant.trycloudflare.com
+(Note: This URL changes each time you restart the tunnel)
+
+Vite config was modified to allow external hosts:
+File: /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app/frontend/vite.config.ts
+Added: server.allowedHosts: true
+
+
+LAYER 3: SOFTWARE INSTALLED
+---------------------------
+- cloudflared (installed via Homebrew)
+  Location: /home/linuxbrew/.linuxbrew/bin/cloudflared
+
+================================================================================
+                     HOW TO STOP EVERYTHING (TEMPORARY)
+================================================================================
+
+1. STOP THE CLOUDFLARE TUNNEL:
+   pkill cloudflared
+   
+   Or press Ctrl+C in the terminal running the tunnel
+
+2. STOP PM2 PROCESSES:
+   cd /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app
+   npx pm2 stop all
+   
+   Or to completely remove from PM2:
+   npx pm2 delete all
+
+3. CHECK NOTHING IS RUNNING:
+   npx pm2 status
+   pgrep cloudflared
+
+================================================================================
+                HOW TO RESTORE PC TO ORIGINAL STATE (PERMANENT)
+================================================================================
+
+STEP 1: Stop all running processes
+----------------------------------
+pkill cloudflared
+cd /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app
+npx pm2 delete all
+npx pm2 kill
+
+STEP 2: Uninstall cloudflared (optional - if you don't want it anymore)
+-----------------------------------------------------------------------
+brew uninstall cloudflared
+
+STEP 3: Revert the vite.config.ts change (optional)
+---------------------------------------------------
+Edit: /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app/frontend/vite.config.ts
+
+Change FROM:
+    export default defineConfig({
+      plugins: [react()],
+      server: {
+        allowedHosts: true,
+      },
+    })
+
+Change TO:
+    export default defineConfig({
+      plugins: [react()],
+    })
+
+STEP 4: Clean up PM2 logs and data (optional)
+---------------------------------------------
+rm -rf ~/.pm2
+
+================================================================================
+                         HOW TO RESTART EVERYTHING
+================================================================================
+
+1. START PM2 PROCESSES:
+   cd /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app
+   npx pm2 start ecosystem.config.js
+
+2. START CLOUDFLARE TUNNEL (for public access):
+   cloudflared tunnel --url http://localhost:5173
+   
+   (Note: You'll get a NEW public URL each time)
+
+3. CHECK STATUS:
+   npx pm2 status
+   npx pm2 logs
+
+================================================================================
+                              QUICK REFERENCE
+================================================================================
+
+| Action                    | Command                                        |
+|---------------------------|------------------------------------------------|
+| Start app (local)         | npx pm2 start ecosystem.config.js              |
+| Start public tunnel       | cloudflared tunnel --url http://localhost:5173 |
+| Stop app                  | npx pm2 stop all                               |
+| Stop tunnel               | pkill cloudflared                              |
+| View logs                 | npx pm2 logs                                   |
+| Check status              | npx pm2 status                                 |
+| Restart frontend          | npx pm2 restart ocr-frontend                   |
+| Restart backend           | npx pm2 restart ocr-backend                    |
+| Delete all PM2 processes  | npx pm2 delete all                             |
+| Kill PM2 daemon           | npx pm2 kill                                   |
+| Uninstall cloudflared     | brew uninstall cloudflared                     |
+
+================================================================================
+                                   PORTS USED
+================================================================================
+
+| Service          | Port | Bound To    | Purpose                              |
+|------------------|------|-------------|--------------------------------------|
+| Frontend (Vite)  | 5173 | 0.0.0.0     | React web interface                  |
+| Backend (API)    | 8000 | 0.0.0.0     | FastAPI OCR processing               |
+| Cloudflare QUIC  | -    | Outbound    | Tunnel connection (no port opened)   |
+
+================================================================================
+                              FILES MODIFIED
+================================================================================
+
+1. /home/klaybrown/.gemini/antigravity/scratch/layout-ocr/ocr-web-app/frontend/vite.config.ts
+   - Added: server.allowedHosts: true
+   - Reason: Allow Cloudflare tunnel hostname to access the dev server
+
+================================================================================
+                              SECURITY NOTES
+================================================================================
+
+1. The Cloudflare quick tunnel URL is temporary and changes each restart
+2. Anyone with the URL can access your frontend while the tunnel is running
+3. The backend API is also accessible if someone knows about it
+4. For production use, consider:
+   - Adding authentication
+   - Using a permanent Cloudflare tunnel with a custom domain
+   - Setting up proper firewall rules
+
+================================================================================
