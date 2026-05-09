@@ -1,204 +1,202 @@
-import { useState } from 'react'
-import { Upload, FileText, Download, Loader2, AlertCircle, Sparkles } from 'lucide-react'
-import './index.css' // Ensure index is imported
+import { useState, useCallback } from 'react'
+import UploadStep from './components/UploadStep'
+import PreviewStep from './components/PreviewStep'
+import ResultStep from './components/ResultStep'
+import HistoryPanel from './components/HistoryPanel'
+import type { DocumentData, GenerateResponse, HistoryEntry, AgentEvent } from './types'
+import './index.css'
 
-// Use environment variable or default to localhost:8000
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-function App() {
-  const [file, setFile] = useState<File | null>(null)
-  const [isProcessing, setIsProcessing] = useState(false)
+type Step = 'upload' | 'preview' | 'result'
+const STEPS: Step[] = ['upload', 'preview', 'result']
+const STEP_LABELS = { upload: 'Upload', preview: 'Review', result: 'Export' }
+
+export default function App() {
+  const [step, setStep] = useState<Step>('upload')
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [docData, setDocData] = useState<{ document: DocumentData } | null>(null)
+  const [result, setResult] = useState<GenerateResponse | null>(null)
+  const [filename, setFilename] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
-  const [isDragOver, setIsDragOver] = useState(false)
+  const [history, setHistory] = useState<HistoryEntry[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [agentProgress, setAgentProgress] = useState<AgentEvent[]>([])
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
-      setError(null)
-      setDownloadUrl(null)
+  const refreshHistory = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/history`)
+      if (res.ok) {
+        const data = await res.json()
+        setHistory(data.history)
+      }
+    } catch {
+      // history is non-critical
     }
-  }
+  }, [])
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(true)
-  }
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(false)
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(false)
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0])
-      setError(null)
-      setDownloadUrl(null)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!file) return
-
-    setIsProcessing(true)
+  const handleExtract = useCallback(async (file: File) => {
+    setIsLoading(true)
     setError(null)
+    setFilename(file.name)
+    setAgentProgress([])
 
     const formData = new FormData()
     formData.append('file', file)
 
     try {
-      const response = await fetch(`${API_URL}/api/convert`, {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
+      const res = await fetch(`${API_URL}/api/extract`, { method: 'POST', body: formData })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.detail || res.statusText)
       }
 
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      setDownloadUrl(url)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during conversion')
-    } finally {
-      setIsProcessing(false)
+      const reader = res.body!.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const chunks = buffer.split('\n\n')
+        buffer = chunks.pop() ?? ''
+        for (const chunk of chunks) {
+          if (!chunk.startsWith('data: ')) continue
+          const event: AgentEvent = JSON.parse(chunk.slice(6))
+          if (event.type === 'done') {
+            setSessionId(event.session_id!)
+            setDocData(event.data!)
+            setStep('preview')
+            setIsLoading(false)
+          } else if (event.type === 'error') {
+            throw new Error(event.message ?? 'Extraction failed')
+          } else {
+            setAgentProgress(prev => [...prev, event])
+          }
+        }
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Extraction failed')
+      setIsLoading(false)
     }
-  }
+  }, [])
+
+  const handleGenerate = useCallback(async (editedData: { document: DocumentData }) => {
+    if (!sessionId) return
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const res = await fetch(`${API_URL}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, data: editedData }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.detail || res.statusText)
+      }
+      const data: GenerateResponse = await res.json()
+      setResult(data)
+      setStep('result')
+      refreshHistory()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Generation failed')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [sessionId, refreshHistory])
+
+  const handleFeedback = useCallback(async (rating: number, comment: string) => {
+    if (!sessionId) return
+    await fetch(`${API_URL}/api/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, rating, comment }),
+    })
+    setHistory(prev => prev.map(h => h.session_id === sessionId ? { ...h, rating } : h))
+  }, [sessionId])
+
+  const handleReset = useCallback(() => {
+    setStep('upload')
+    setSessionId(null)
+    setDocData(null)
+    setResult(null)
+    setError(null)
+    setFilename('')
+    setAgentProgress([])
+  }, [])
+
+  const currentStepIndex = STEPS.indexOf(step)
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-950 relative overflow-hidden">
-        {/* Subtle Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-slate-950 pointer-events-none" />
+    <div className="min-h-screen bg-slate-950 text-white flex">
+      <div className={`flex-1 flex flex-col items-center justify-center p-6 transition-all duration-300 ${showHistory ? 'mr-80' : ''}`}>
+        <div className="absolute inset-0 bg-linear-to-tr from-indigo-500/10 via-purple-500/10 to-slate-950 pointer-events-none" />
 
-        <div className="w-full max-w-lg z-10">
-            {/* Header */}
-            <div className="text-center mb-10 space-y-3">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-800 shadow-xl ring-1 ring-white/10 mb-2">
-                    <Sparkles className="w-7 h-7 text-indigo-400" />
-                </div>
-                <h1 className="text-4xl font-bold tracking-tight text-white">
-                    Layout OCR
-                </h1>
-                <p className="text-slate-400 font-light text-lg">
-                    Convert images to editable documents instantly.
-                </p>
+        {/* Step indicator */}
+        <div className="relative z-10 flex items-center gap-2 mb-8">
+          {STEPS.map((s, i) => (
+            <div key={s} className="flex items-center gap-2">
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all duration-200
+                ${step === s
+                  ? 'bg-indigo-600 text-white ring-2 ring-indigo-400/30'
+                  : currentStepIndex > i
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-slate-800 text-slate-500'}`}
+              >
+                {currentStepIndex > i ? '✓' : i + 1}
+              </div>
+              <span className={`text-sm transition-colors ${step === s ? 'text-white font-medium' : 'text-slate-500'}`}>
+                {STEP_LABELS[s]}
+              </span>
+              {i < STEPS.length - 1 && (
+                <div className={`w-8 h-px mx-1 transition-colors ${currentStepIndex > i ? 'bg-emerald-600' : 'bg-slate-700'}`} />
+              )}
             </div>
+          ))}
 
-            {/* Main Card */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
-                <form onSubmit={handleSubmit} className="p-8 space-y-8">
-                    {/* File Upload Area */}
-                    <div
-                        className={`
-                            relative group border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ease-out cursor-pointer
-                            ${isDragOver 
-                                ? 'border-indigo-500 bg-indigo-500/5' 
-                                : 'border-slate-700 hover:border-slate-600 hover:bg-slate-800/50'
-                            }
-                        `}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                    >
-                        <input
-                            type="file"
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                        />
-
-                        <div className="flex flex-col items-center gap-4">
-                             {file ? (
-                                <>
-                                    <div className="p-3 bg-indigo-500/20 rounded-lg">
-                                        <FileText className="w-8 h-8 text-indigo-400" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="font-medium text-white break-all line-clamp-1">{file.name}</p>
-                                        <p className="text-xs text-slate-500 uppercase tracking-wide">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                                    </div>
-                                    <span className="text-xs text-indigo-400 font-medium bg-indigo-400/10 px-3 py-1 rounded-full">Change File</span>
-                                </>
-                            ) : (
-                                <>
-                                    <div className={`p-3 rounded-xl bg-slate-800 transition-transform ${isDragOver ? 'scale-110' : 'group-hover:scale-110'}`}>
-                                        <Upload className="w-8 h-8 text-slate-400" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="font-medium text-slate-200">Click or drag image here</p>
-                                        <p className="text-sm text-slate-500">Supports JPG, PNG</p>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Error Handling */}
-                     {error && (
-                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3">
-                            <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
-                            <p className="text-sm text-red-200">{error}</p>
-                        </div>
-                    )}
-
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={!file || isProcessing}
-                        className={`
-                            w-full py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 font-semibold text-white transition-all
-                            ${!file || isProcessing
-                                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                                : 'bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] shadow-lg shadow-indigo-500/20'
-                            }
-                        `}
-                    >
-                        {isProcessing ? (
-                            <>
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                                Converting...
-                            </>
-                        ) : (
-                            'Convert Document'
-                        )}
-                    </button>
-                </form>
-
-                {/* Success Banner */}
-                 {downloadUrl && (
-                    <div className="bg-emerald-500/10 border-t border-emerald-500/20 p-6">
-                        <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-emerald-500/20 rounded-full">
-                                    <Download className="w-5 h-5 text-emerald-400" />
-                                </div>
-                                <div className="text-left">
-                                    <p className="font-medium text-emerald-100">Ready for Download</p>
-                                </div>
-                            </div>
-                            <a 
-                                href={downloadUrl}
-                                download={`ocr-result-${file?.name ? file.name.split('.')[0] : 'doc'}.docx`}
-                                className="text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
-                            >
-                                Download Now &rarr;
-                            </a>
-                        </div>
-                    </div>
-                )}
-            </div>
-            
-            <div className="mt-8 text-center">
-                 <p className="text-xs text-slate-600">Powered by Gemini Pro Vision</p>
-            </div>
+          <button
+            onClick={() => {
+              setShowHistory(v => !v)
+              if (!showHistory) refreshHistory()
+            }}
+            className="ml-6 text-xs text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-600 px-3 py-1.5 rounded-lg transition-colors"
+          >
+            {showHistory ? 'Hide History' : 'History'}
+          </button>
         </div>
+
+        <div className="relative z-10 w-full max-w-2xl">
+          {step === 'upload' && (
+            <UploadStep onExtract={handleExtract} isLoading={isLoading} error={error} agentProgress={agentProgress} />
+          )}
+          {step === 'preview' && docData && (
+            <PreviewStep
+              docData={docData}
+              filename={filename}
+              isLoading={isLoading}
+              error={error}
+              onGenerate={handleGenerate}
+              onBack={handleReset}
+            />
+          )}
+          {step === 'result' && result && sessionId && (
+            <ResultStep
+              result={result}
+              sessionId={sessionId}
+              onFeedback={handleFeedback}
+              onReset={handleReset}
+            />
+          )}
+        </div>
+      </div>
+
+      {showHistory && (
+        <HistoryPanel history={history} onClose={() => setShowHistory(false)} />
+      )}
     </div>
   )
 }
-
-export default App
